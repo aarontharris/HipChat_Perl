@@ -1,50 +1,38 @@
 #!/usr/bin/perl
 
-use strict;
 use ATH::ATH;
 use HipChat::HipChat;
+
+use strict;
 use CGI;
 use Data::Dumper;
 
-my $cgi = new CGI;
-my $vars = $cgi->Vars();
 
 &main();
-sub main {
-  my $postData = $vars->{POSTDATA};
-  my $hipRecv = new HipRecv($postData);
-  &debug( Dumper( $hipRecv->getRequestData() ) );
-  &debug( "Message = " . $hipRecv->getMessageBody() );
+sub main { 
 
+  # HipChat posts json to our server for us to examine and handle so lets get it
+  my $cgi = new CGI;
+  my $vars = $cgi->Vars();
+  my $postData = $vars->{POSTDATA};
+
+  # Parse the jsonString postData into our HipRecv
+  my $hipRecv = new HipRecv($postData);
+
+  # Build our response
   my $hipResp = new HipResp($hipRecv);
+
+  # Default message
   my $message = "You said: " . $hipRecv->getMessageBodyNoCmd();
-  if ( $hipRecv->getMessageBody() =~ /what time is it/ ) {
-    #$message = "time to get a watch";
-    my $time = `date`;
-    chomp($time);
-    $message = "Time: $time";
+
+  # Respond to a particular message "what time is it"
+  if ( $hipRecv->getMessageBodyNoCmd() =~ /what time is it/ ) {
+    $message = "time to get a watch";
   }
 
+  # Set our message and respond
   $hipResp->setMessage($message);
   $hipResp->respond();
-}
-
-sub respond {
-  print $cgi->header("application/json");
-}
-
-sub post {
-  my $url = "https://api.hipchat.com/v2/room/1535857/notification?auth_token=ecSDPAo34RwIuYGjRjr3G59Fp3iyKVyre40z66la";
-  my $postData = qq|{"color": "green", "message": "My first notification (yey)", "notify": false, "message_format": "text"}|;
-  #my $request = POST( $url, $postData );
-  #my $content = $ua->request($request)->as_string(); 
-  #print STDERR $content
-}
-
-sub getResponseUrl {
-  my $roomId = shift;
-  my $url = "https://api.hipchat.com/v2/room/1535857/notification?auth_token=ecSDPAo34RwIuYGjRjr3G59Fp3iyKVyre40z66la";
-  return $url;
 }
 
 sub debug {

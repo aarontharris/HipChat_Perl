@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 
 package HipChat;
+
+use ATH::ATH;
+use ATH::JsonParser;
+
 use strict;
-use ATH;
-use JsonParser;
 use CGI;
 use Data::Dumper;
 
