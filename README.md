@@ -1,6 +1,10 @@
 # HipChat_Perl
 HipChat Utility for Perl.  Allows you to quickly hack out a HipChat bot
 
+# What you'll need
+- A webserver that can respond to HipChat posts and supports perl/cgi.
+- Either a static IP or a stationary domain to give to HipChat.
+
 # Installation
 I'm using submodules, so the easiest way to get the whole project is:
 ```
